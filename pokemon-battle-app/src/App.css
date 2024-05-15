@@ -1,7 +1,23 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  text-align: center;
+}
+
+body {
+  background-image: url(./assets/1351901.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: black;
+}
+
+img {
+  width: 200px;
+  height: 200px;
+}
+
+.main-img {
+  width: 200px;
+  height: 70px;
 }
 
 .logo.react:hover {

@@ -72,7 +72,7 @@ export default function SearchAppBar({ apiCall }) {
                         component="div"
                         sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
                     >
-                        Pokemons
+                        <img className="main-img" src="/src/assets/imgbin_pokemon-logo-png.png" alt="" />
                     </Typography>
                     <Button color="success" variant="contained" onClick={handleClick}>
                         <SearchIcon />

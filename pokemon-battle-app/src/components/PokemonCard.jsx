@@ -6,12 +6,21 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import { yellow } from "@mui/material/colors";
+import BasicModal from './Modal';
 
 
 const PokemonCard = ({ name, url }) => {
     const [pokemon, setPokemon] = useState()
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const [open, setOpen] = useState(false);
+    const closeModal = () => setOpen(false);
+    const openModal = () => setOpen(true);
+
+    function afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        subtitle.style.color = "#f00";
+    }
 
     const pokemonApiCall = async () => {
         try {
@@ -34,7 +43,7 @@ const PokemonCard = ({ name, url }) => {
         <div style={{ padding: "1%" }}>
             <Card
                 sx={{ maxWidth: 180, maxHeight: 330, minHeight: 330, bgcolor: yellow[200] }}
-            >
+                onClick={() => openModal()}>
                 <CardActionArea>
                     <CardMedia
                         sx={{ minHeight: 220 }}
@@ -42,7 +51,7 @@ const PokemonCard = ({ name, url }) => {
                         height="50"
                         width="50"
                         image={pokemon.sprites.front_default}
-                        alt="green iguana"
+                        alt="pokemon"
                     />
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -55,6 +64,7 @@ const PokemonCard = ({ name, url }) => {
                     </CardContent>
                 </CardActionArea>
             </Card>
+            <BasicModal open={open} setOpen={setOpen} closeModal={closeModal} pokemon={pokemon} />
         </div>
     );
 }
