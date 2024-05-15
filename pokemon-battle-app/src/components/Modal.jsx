@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { yellow } from "@mui/material/colors";
+import { Link } from "react-router-dom";
 const style = {
     position: "absolute",
     top: "50%",
@@ -46,6 +47,7 @@ export default function BasicModal({ pokemon, open, closeModal, setOpen }) {
                             Types: {pokemon.types.map((type) => type.type.name).join(", ")}
                         </p>
                     </Typography>
+                    <Link to='PokemonBattle'>Fight</Link>
                 </Box>
             </Modal>
         </div>

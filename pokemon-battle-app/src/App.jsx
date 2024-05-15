@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Pokemons from './components/Pokemons.jsx'
 import Pokemon from './components/Pokemon.jsx'
-import PokemonGame from './components/PokemonBattle.jsx'
+
 
 const API_POKEMON = import.meta.env.VITE_API_URL
 
@@ -56,21 +56,11 @@ function App() {
 
     <>
       <Searchbar apiCall={singlePokemonApiCall} />
-
-
-
-
+      
       <h1>Welcome Pokemons</h1>
 
       {/* {<Pokemons pokemons={pokemon} />} */}
       {pokemon ? <Pokemon {...pokemon} /> : <Pokemons pokemons={pokemons} />}
-
-
-
-
-
-
-
 
     </>
   )

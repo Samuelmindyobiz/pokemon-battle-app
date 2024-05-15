@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useEffect } from 'react';
 
 const PokemonGame = () => {
     const [pokemonList, setPokemonList] = useState([]);
@@ -11,10 +12,14 @@ const PokemonGame = () => {
         try {
             const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=20');
             setPokemonList(response.data.results);
+            
         } catch (error) {
             console.error('Error fetching Pokemon list:', error);
         }
     };
+useEffect(() => {
+    fetchPokemonList()},[]);
+
 
     const selectPokemon = (pokemon) => {
         setPlayerPokemon(pokemon);
@@ -28,10 +33,21 @@ const PokemonGame = () => {
 
     const startBattle = () => {
         if (playerPokemon && computerPokemon) {
-            // Implement battle mechanics here
-            // Compare stats, types, abilities, etc.
-            // Update battle result
+            const randomResult = Math.random();
+            if (randomResult < 0.33) {
+                setBattleResult('Player wins');
+            } else if (randomResult < 0.66) {
+                setBattleResult('Computer wins');
+            } else {
+                setBattleResult('Tie');
+            }
             setBattleResult('Player wins/loses/ties');
+
+
+        } else {
+            console.error('Player or computer Pokemon not selected');
+
+
         }
     };
 
