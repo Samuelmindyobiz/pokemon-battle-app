@@ -1,77 +1,131 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useEffect } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
+import { useEffect } from "react";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { useLocation } from "react-router-dom";
+
 
 const PokemonGame = () => {
     const [pokemonList, setPokemonList] = useState([]);
     const [playerPokemon, setPlayerPokemon] = useState(null);
     const [computerPokemon, setComputerPokemon] = useState(null);
-    const [battleResult, setBattleResult] = useState('');
+    const [battleResult, setBattleResult] = useState("");
 
-    const fetchPokemonList = async () => {
+    const [loading, setLoading] = useState(true)
+
+
+    let { state } = useLocation();
+    console.log(state)
+
+    const fetchRandomPokemon = async () => {
         try {
-            const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=20');
-            setPokemonList(response.data.results);
-            
+            const randomNumber = Math.floor(Math.random() * 150) + 1;
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${randomNumber}`);
+            setComputerPokemon(response.data);
+        }
+
+        catch (error) {
+            console.error("Error fetching random Pokemon:", error);
+        }
+
+        finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchPokemon = async () => {
+        try {
+            const response = await axios.get(
+                `https://pokeapi.co/api/v2/pokemon/${state}`
+            );
+            console.log(response.data)
+            setPokemonList(response.data);
         } catch (error) {
-            console.error('Error fetching Pokemon list:', error);
+            console.error("Error fetching Pokemon list:", error);
         }
-    };
-useEffect(() => {
-    fetchPokemonList()},[]);
-
-
-    const selectPokemon = (pokemon) => {
-        setPlayerPokemon(pokemon);
-        selectComputerPokemon();
-    };
-
-    const selectComputerPokemon = () => {
-        const randomIndex = Math.floor(Math.random() * pokemonList.length);
-        setComputerPokemon(pokemonList[randomIndex]);
-    };
-
-    const startBattle = () => {
-        if (playerPokemon && computerPokemon) {
-            const randomResult = Math.random();
-            if (randomResult < 0.33) {
-                setBattleResult('Player wins');
-            } else if (randomResult < 0.66) {
-                setBattleResult('Computer wins');
-            } else {
-                setBattleResult('Tie');
-            }
-            setBattleResult('Player wins/loses/ties');
-
-
-        } else {
-            console.error('Player or computer Pokemon not selected');
-
+        finally {
 
         }
     };
+    useEffect(() => {
+        if (state) {
+            fetchPokemon();
+            fetchRandomPokemon();
+        }
+
+    }, []);
+
+    if (loading) return <p>Loading...</p>
+
 
     return (
         <div>
             <h1>Pokemon Battle Game</h1>
             <div>
                 <h2>Select Your Pokemon:</h2>
-                <ul>
-                    {pokemonList.map((pokemon, index) => (
-                        <li key={index}>
-                            <button onClick={() => selectPokemon(pokemon)}>{pokemon.name}</button>
+                <div className="random-card">
+                    <ul>
+                        <li>
+                            <Card sx={{ maxWidth: 345 }}>
+                                <CardMedia
+                                    sx={{ height: 140, width: 140, margin: 10 }}
+                                    image={`https://img.pokemondb.net/artwork/large/${pokemonList.name}.jpg`}
+                                    title="green iguana"
+                                />
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {pokemonList.name}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {pokemonList.types &&
+                                            pokemonList.types.map((type, index) => (
+                                                <li key={index}>{type.type.name}</li>
+                                            ))}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions className="action-btn">
+                                    <Button color="error" size="small">Attack</Button>
+                                    <Button color="success" size="small">Defend</Button>
+                                </CardActions>
+                            </Card>
+
                         </li>
-                    ))}
-                </ul>
-            </div>
-            {playerPokemon && computerPokemon && (
-                <div>
-                    <h2>Player's Pokemon: {playerPokemon.name}</h2>
-                    <h2>Computer's Pokemon: {computerPokemon.name}</h2>
-                    <button onClick={startBattle}>Start Battle</button>
-                    {battleResult && <p>Battle Result: {battleResult}</p>}
+                    </ul>
+
+                    <ul >
+                        <li >
+                            <Card sx={{ maxWidth: 345 }}>
+                                <CardMedia
+                                    sx={{ height: 140, width: 140, margin: 10 }}
+                                    image={`https://img.pokemondb.net/artwork/large/${computerPokemon.name}.jpg`}
+                                    title="green iguana"
+                                />
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {computerPokemon.name}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {computerPokemon.types &&
+                                            computerPokemon.types.map((type, index) => (
+                                                <li key={index}>{type.type.name}</li>
+                                            ))}
+                                    </Typography>
+                                </CardContent>
+                                <CardActions className="action-btn">
+                                    <Button color="error" size="small">Attack</Button>
+                                    <Button color="success" size="small">Defend</Button>
+                                </CardActions>
+                            </Card>
+
+                        </li>
+                    </ul>
                 </div>
-            )}
+            </div>
         </div>
     );
 };

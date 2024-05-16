@@ -6,6 +6,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { yellow } from "@mui/material/colors";
+
+
 export default function Pokemon(props) {
     return (
         <Card sx={{ maxWidth: 345, bgcolor: yellow[200] }}>

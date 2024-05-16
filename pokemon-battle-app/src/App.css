@@ -15,6 +15,34 @@ img {
   height: 200px;
 }
 
+.battle-btn {
+  border: 2px solid black;
+  border-radius: 10px;
+  width: 100px;
+  text-align: center;
+  background-color: green;
+}
+
+.random-card {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+ul,
+li {
+  list-style-type: none;
+}
+
+.action-btn {
+  width: 300px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.battle-link {
+  color: white;
+}
+
 .main-img {
   width: 200px;
   height: 70px;

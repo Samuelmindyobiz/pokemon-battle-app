@@ -10,7 +10,7 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 200,
+    width: 300,
 
     bgcolor: yellow[200],
     border: "2px solid #000",
@@ -47,7 +47,9 @@ export default function BasicModal({ pokemon, open, closeModal, setOpen }) {
                             Types: {pokemon.types.map((type) => type.type.name).join(", ")}
                         </p>
                     </Typography>
-                    <Link to='PokemonBattle'>Fight</Link>
+                    <div className="battle-btn">
+                        <Link className="battle-link" to='PokemonBattle' state={pokemon.id}>Fight</Link>
+                    </div>
                 </Box>
             </Modal>
         </div>
