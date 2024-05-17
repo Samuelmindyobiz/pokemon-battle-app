@@ -12,7 +12,7 @@ import { useLocation } from "react-router-dom";
 
 const PokemonGame = () => {
     const [pokemonList, setPokemonList] = useState([]);
-    const [playerPokemon, setPlayerPokemon] = useState(null);
+    // const [playerPokemon, setPlayerPokemon] = useState(null);
     const [computerPokemon, setComputerPokemon] = useState(null);
     const [battleResult, setBattleResult] = useState("");
 
@@ -61,9 +61,13 @@ const PokemonGame = () => {
     }, []);
 
     if (loading) return <p>Loading...</p>
+
+
     const startBattle = () => {
         const playerAttack = Math.floor(Math.random() * 100) + 1;
         const computerAttack = Math.floor(Math.random() * 100) + 1;
+       
+
 
         if (playerAttack > computerAttack) {
             setBattleResult("You win!");
@@ -100,9 +104,13 @@ const PokemonGame = () => {
                   <CardMedia
                     sx={{ height: 140, width: 140, margin: 10 }}
                     image={`https://img.pokemondb.net/artwork/large/${pokemonList.name}.jpg`}
-                    title="green iguana"
+                    title="Pokemon"
                   />
                   <CardContent>
+                    {pokemonList.stats.map(
+                      (stat) => stat.stat.name === "hp" && stat.base_stat
+                    )}
+
                     <Typography gutterBottom variant="h5" component="div">
                       {pokemonList.name}
                     </Typography>
@@ -131,8 +139,11 @@ const PokemonGame = () => {
                   <CardMedia
                     sx={{ height: 140, width: 140, margin: 10 }}
                     image={`https://img.pokemondb.net/artwork/large/${computerPokemon.name}.jpg`}
-                    title="green iguana"
+                    title="Pokemon"
                   />
+                  {pokemonList.stats.map(
+                    (stat) => stat.stat.name === "hp" && stat.base_stat
+                  )}
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                       {computerPokemon.name}
@@ -161,17 +172,16 @@ const PokemonGame = () => {
           <h2>Battle Result:</h2>
           <p>{battleResult}</p>
 
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={fetchRandomPokemon}
-            >
-                Play Again
-            </Button>
-
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={fetchRandomPokemon}
+          >
+            Play Again
+          </Button>
+        </div>
       </div>
-  
-    </div>);
+    );
 };
 
 
