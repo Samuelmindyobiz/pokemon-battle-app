@@ -66,7 +66,7 @@ const PokemonGame = () => {
     const startBattle = () => {
         const playerAttack = Math.floor(Math.random() * 100) + 1;
         const computerAttack = Math.floor(Math.random() * 100) + 1;
-       
+
 
 
         if (playerAttack > computerAttack) {
@@ -91,6 +91,7 @@ const PokemonGame = () => {
             setBattleResult("It's a tie!");
         }
     }
+     
 
     return (
       <div>
@@ -119,6 +120,11 @@ const PokemonGame = () => {
                         pokemonList.types.map((type, index) => (
                           <li key={index}>{type.type.name}</li>
                         ))}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        {pokemonList.stats.map(
+                            (stat) => stat.stat.name === "hp" && stat.base_stat
+                        )}
                     </Typography>
                   </CardContent>
                   <CardActions className="action-btn">
@@ -153,6 +159,12 @@ const PokemonGame = () => {
                         computerPokemon.types.map((type, index) => (
                           <li key={index}>{type.type.name}</li>
                         ))}
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary">
+                      {computerPokemon.stats.map(
+                        (stat) => stat.stat.name === "hp" && stat.base_stat
+                      )}
                     </Typography>
                   </CardContent>
                   <CardActions className="action-btn">
