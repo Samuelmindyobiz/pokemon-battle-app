@@ -10,90 +10,110 @@ import Typography from "@mui/material/Typography";
 import { useLocation } from "react-router-dom";
 
 
+
 const PokemonGame = () => {
-    const [pokemonList, setPokemonList] = useState([]);
-    // const [playerPokemon, setPlayerPokemon] = useState(null);
-    const [computerPokemon, setComputerPokemon] = useState(null);
-    const [battleResult, setBattleResult] = useState("");
-
-    const [loading, setLoading] = useState(true)
-
-
-    let { state } = useLocation();
-    console.log(state)
-
-    const fetchRandomPokemon = async () => {
-        try {
-            const randomNumber = Math.floor(Math.random() * 150) + 1;
-            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${randomNumber}`);
-            setComputerPokemon(response.data);
-        }
-
-        catch (error) {
-            console.error("Error fetching random Pokemon:", error);
-        }
-
-        finally {
-            setLoading(false);
-        }
+  const [pokemonList, setPokemonList] = useState([]);
+   const [playerPokemonHp, setPlayerPokemonHp] = useState(null);
+  const [computerPokemon, setComputerPokemon] = useState(null);
+  const [computerPokemonHP, setComputerPokemonHP] = useState(null);
+  const [battleResult, setBattleResult] = useState("");
+  const [loading, setLoading] = useState(true);
+  let { state } = useLocation();
+  const fetchRandomPokemon = async () => {
+    try {
+      const randomNumber = Math.floor(Math.random() * 150) + 1;
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${randomNumber}`
+      );
+      setComputerPokemon(response.data);
+      setComputerPokemonHP(response.data.stats[0].base_stat);
+      
+    } catch (error) {
+      console.error("Error fetching random Pokemon:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchPokemon = async () => {
+    try {
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon/${state}`
+      );
+      console.log(response.data);
+      setPokemonList(response.data);
+      setPlayerPokemonHp(response.data.stats[0].base_stat);
+    } catch (error) {
+      console.error("Error fetching Pokemon list:", error);
     }
 
-    const fetchPokemon = async () => {
-        try {
-            const response = await axios.get(
-                `https://pokeapi.co/api/v2/pokemon/${state}`
-            );
-            console.log(response.data)
-            setPokemonList(response.data);
-        } catch (error) {
-            console.error("Error fetching Pokemon list:", error);
-        }
-        finally {
+   
+  };
 
-        }
-    };
-    useEffect(() => {
-        if (state) {
-            fetchPokemon();
-            fetchRandomPokemon();
-        }
-
-    }, []);
-
-    if (loading) return <p>Loading...</p>
-
-
-    const startBattle = () => {
-        const playerAttack = Math.floor(Math.random() * 100) + 1;
-        const computerAttack = Math.floor(Math.random() * 100) + 1;
-
-
-
-        if (playerAttack > computerAttack) {
-            setBattleResult("You win!");
-        } else if (playerAttack < computerAttack) {
-            setBattleResult("You lose!");
-        } else {
-            setBattleResult("It's a tie!");
-        }
+  useEffect(() => {
+    if (state) {
+      fetchPokemon();
+      fetchRandomPokemon();
     }
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
 
 
-    const defend = () => {
-        const playerDefend = Math.floor(Math.random() * 100) + 1;
-        const computerDefend = Math.floor(Math.random() * 100) + 1;
-
-        if (playerDefend > computerDefend) {
-            setBattleResult("You win!");
-        } else if (playerDefend < computerDefend) {
-            setBattleResult("You lose!");
-        } else {
-            setBattleResult("It's a tie!");
-        }
+  const startBattle = () => {
+    const computerAttack = Math.floor(Math.random() * 20) + 1;
+    setComputerPokemonHP(computerPokemonHP - computerAttack);
+    if (playerPokemonHp <= 0) {
+      setBattleResult("You lose");
+      
     }
-     
+    if (computerPokemonHP <= 0) {
+      setBattleResult("You win");
+      setComputerPokemonHP(0);
+    }
+    
+  };
+  const defend = () => {
+    const computerDefend = Math.floor(Math.random() * 20) + 1;
+    setComputerPokemonHP(computerPokemonHP + computerDefend);
+    if (playerPokemonHp <= 0) {
+      setBattleResult("You lose");
+    }
+    else if(computerPokemonHP <= 0) {
+      setBattleResult("You win");
+    }
+    
+  };
 
-    return (
+const playerAttack = () => {
+    const playerAttacks = Math.floor(Math.random() * 20) + 1;
+    setPlayerPokemonHp(playerPokemonHp - playerAttacks);
+    if (playerPokemonHp <= 0) {
+    setBattleResult("You lose");
+    setPlayerPokemonHp(0);
+  }
+  else if (computerPokemonHP <= 0) {
+    setBattleResult("You win");
+    
+  }
+};
+  const playerDefend = () => {
+    const playerDefends = Math.floor(Math.random() * 20) + 1;
+    setPlayerPokemonHp(playerPokemonHp + playerDefends);
+
+  }
+
+  
+  
+
+  // if (playerPokemonHp <= 0 && computerPokemonHP <= 0) {
+  //   setBattleResult("It's a tie");
+  // }
+
+  
+
+
+  return (
+    <>
       <div>
         <h1>Pokemon Battle Game</h1>
         <div>
@@ -107,11 +127,9 @@ const PokemonGame = () => {
                     image={`https://img.pokemondb.net/artwork/large/${pokemonList.name}.jpg`}
                     title="Pokemon"
                   />
-                  <CardContent>
-                    {pokemonList.stats.map(
-                      (stat) => stat.stat.name === "hp" && stat.base_stat
-                    )}
 
+                  <CardContent>
+                    {playerPokemonHp}
                     <Typography gutterBottom variant="h5" component="div">
                       {pokemonList.name}
                     </Typography>
@@ -122,23 +140,20 @@ const PokemonGame = () => {
                         ))}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {pokemonList.stats.map(
-                            (stat) => stat.stat.name === "hp" && stat.base_stat
-                        )}
+                      {playerPokemonHp}
                     </Typography>
                   </CardContent>
                   <CardActions className="action-btn">
                     <Button color="error" size="small" onClick={startBattle}>
                       Attack
                     </Button>
-                    <Button color="success" size="small" onClick={defend}>
+                    <Button color="success" size="small" onClick={playerDefend}>
                       Defend
                     </Button>
                   </CardActions>
                 </Card>
               </li>
             </ul>
-
             <ul>
               <li>
                 <Card sx={{ maxWidth: 345 }}>
@@ -147,9 +162,7 @@ const PokemonGame = () => {
                     image={`https://img.pokemondb.net/artwork/large/${computerPokemon.name}.jpg`}
                     title="Pokemon"
                   />
-                  {pokemonList.stats.map(
-                    (stat) => stat.stat.name === "hp" && stat.base_stat
-                  )}
+                  {computerPokemonHP}
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                       {computerPokemon.name}
@@ -160,15 +173,12 @@ const PokemonGame = () => {
                           <li key={index}>{type.type.name}</li>
                         ))}
                     </Typography>
-
                     <Typography variant="body2" color="text.secondary">
-                      {computerPokemon.stats.map(
-                        (stat) => stat.stat.name === "hp" && stat.base_stat
-                      )}
+                      {computerPokemonHP}
                     </Typography>
                   </CardContent>
                   <CardActions className="action-btn">
-                    <Button color="error" size="small" onClick={startBattle}>
+                    <Button color="error" size="small" onClick={playerAttack}>
                       Attack
                     </Button>
                     <Button color="success" size="small" onClick={defend}>
@@ -183,7 +193,6 @@ const PokemonGame = () => {
         <div>
           <h2>Battle Result:</h2>
           <p>{battleResult}</p>
-
           <Button
             variant="contained"
             color="primary"
@@ -193,8 +202,8 @@ const PokemonGame = () => {
           </Button>
         </div>
       </div>
-    );
+    </>
+  );
 };
-
 
 export default PokemonGame;
